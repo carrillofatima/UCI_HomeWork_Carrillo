@@ -40,6 +40,8 @@ with open(csv_path) as csv_file:
     print("-------------------------------")
     print(f"Total Votes: {Count}")
     print("-------------------------------")
+    # print(f' {Candidates}')
+    # print(f' {Candidates["Khan"]}')
     
             
 #Total number of votes for each candidate
@@ -48,7 +50,7 @@ with open(csv_path) as csv_file:
     
         # percent of votes for each candidate
         percent_of_votes = (Candidates[candidate])/(Count) * 100
-        print(f"{candidate}: {float(percent_of_votes)}% ({Votes_Cast})")
+        print(f"{candidate}: {round(float(percent_of_votes),3)}% ({Votes_Cast})")
         # print(candidate + round(float(percent_of_votes),2 + "%" (Votes_Cast))
         
         if Candidates[candidate] > Candidate_Votes:
@@ -74,10 +76,10 @@ with open("txt_path.txt", "w") as PyPoll_file:
     PyPoll_file.write(f'-----------------\n')
     PyPoll_file.write(f"Total Votes: {Count}\n")
     PyPoll_file.write(f'-----------------\n')
-    PyPoll_file.write(f'Khan: 63.000% (2218231)\n')
-    PyPoll_file.write(f'Correy: 20.000% (2922431)\n')
-    PyPoll_file.write(f'Li: 14.000% (3415371)\n')
-    PyPoll_file.write(f'{candidate}: {float(percent_of_votes)}%: ({Votes_Cast})\n')
+    PyPoll_file.write(f' {Candidates["Khan"]} {round(float(percent_of_votes),3)} {(Votes_Cast)}\n')
+    PyPoll_file.write(f' {Candidates["Correy"]} {round(float(percent_of_votes),3)} {(Votes_Cast)}\n')
+    PyPoll_file.write(f' {Candidates["Li"]} {round(float(percent_of_votes),3)} {(Votes_Cast)}\n')
+    PyPoll_file.write(f' {candidate}: {round(float(percent_of_votes),3)}% ({Votes_Cast})\n')
     PyPoll_file.write(f'-----------------\n')
     PyPoll_file.write(f'Winner: {Popular_Vote}\n')
     PyPoll_file.write(f'-----------------\n')
