@@ -37,8 +37,8 @@ def Home_Page():
         f"Precipitaion: /api/v1.0/precipitation<br/>"
         f"List of Stations: /api/v1.0/stations<br/>"
         f"Temperatures: /api/v1.0/tobs<br/>"
-        f"Temperatures from start date: /api/v1.0/<start><br/>"
-        f"Temperatures from end date: /api/v1.0/<start>/<end><br/>")
+        f"Temperatures from start date: /api/v1.0/YYYY-MM-DD/<br/>"
+        f"Temperatures from end date: /api/v1.0/YYYY-MM-DD/YYYY-MM-DD/<br/>")
 
 #############################################################################
 @app.route("/api/v1.0/precipitation")
@@ -120,30 +120,34 @@ def Mostactive():
 
 ##########################################################################################
 # /api/v1.0/<start> and /api/v1.0/<start>/<end>
-@app.route("/api/v1.0/<start_date>")
+@app.route("/api/v1.0/<start_date>/")
 def Start_date(start_date):
     # Create our session (link) from Python to the DB
-    # session = Session(engine)
+    session = Session(engine)
 
     """Return a list of min, avg and max tobs for a start date"""
     # Query all tobs
 
-    results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+    start_results = session.query(Measurement.date, func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
                 filter(Measurement.date >= start_date).all()
 
-    # session.close()
+
 
     # Create a dictionary from the row data and append to a list of start_date_tobs
     start_date_tobs = []
-    for min, avg, max in results:
-        start_date_tobs_dict = {}
-        results["min_temp"] = min
-        results["avg_temp"] = avg
-        results["max_temp"] = max
-        start_date_tobs.append(start_date_tobs_dict) 
-    return jsonify(start_date_tobs)
+    for data in start_results:
+        start_dict = {}
+        start_dict ["Start Date"] = start_date
+        start_dict["MinTobs"] = data[1]
+        start_dict["avgTobs"] = data[2]
+        start_dict["MaxTobs"] = data[3]
+        start_date_tobs.append(start_dict) 
 
-@app.route("/api/v1.0/<start_date>/<end_date>")
+    # start_date = list(np.ravel(start_results))
+    return jsonify(start_date_tobs=start_date_tobs)
+
+############################################################################################
+@app.route("/api/v1.0/<start_date>/<end_date>/")
 def Start_end_date(start_date, end_date):
     # Create our session (link) from Python to the DB
     # session = Session(engine)
@@ -151,22 +155,26 @@ def Start_end_date(start_date, end_date):
     """Return a list of min, avg and max tobs for start and end dates"""
     # Query all tobs
 
-    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+    end_results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
                 filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
 
-    # session.close()
+   
   
     # Create a dictionary from the row data and append to a list of start_end_date_tobs
-    start_end_tobs = []
-    for min, avg, max in results:
-        start_end_tobs_dict = {}
-        start_end_tobs_dict["min_temp"] = min
-        start_end_tobs_dict["avg_temp"] = avg
-        start_end_tobs_dict["max_temp"] = max
-        start_end_tobs.append(start_end_tobs_dict) 
+    start_end_results = []
+    for data_result in end_results:
+        end_tobs_dict = {}
+        end_tobs_dict['Start Date'] = start_date
+        end_tobs_dict['End Date'] = end_date
+        end_tobs_dict["MinTobs"] = float(data_result[0])
+        end_tobs_dict["AvgTobs"] = float(data_result[1])
+        end_tobs_dict["MaxTobs"] = float(data_result[2])
+
+        start_end_results.append(end_tobs_dict) 
     
+    # start_end_date = list(np.ravel(end_results))
+    return jsonify(start_end_results)
 
-    return jsonify(start_end_tobs)
-
+ 
 if __name__ == "__main__":
     app.run(debug=True)
