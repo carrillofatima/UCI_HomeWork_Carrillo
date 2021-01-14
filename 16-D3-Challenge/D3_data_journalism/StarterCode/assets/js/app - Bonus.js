@@ -21,13 +21,14 @@ var svgHeight = window.innerHeight;
 
 var width = svgWidth - margin.left - margin.right;
 var height = svgHeight - margin.top - margin.bottom;
+console.log(height)
 
 //SVG element
 var svg = d3
     .select("#scatter")
     .append("svg")
-    .attr("height", svgHeight + 50)
-    .attr("width", svgWidth -200);
+    .attr("height", svgHeight)
+    .attr("width", svgWidth);
 
 var chartGroup = svg.append("g")
     .attr("transform", `translate(${margin.left}, ${margin.top})`);
@@ -38,7 +39,8 @@ var chosenYAxis = 'healthcare';
 //function used for updating x-scale var upon click on axis label
 function xScale(censusData, chosenXAxis) {
     var xLinearScale = d3.scaleLinear()
-        .domain([d3.min(censusData, d => d[chosenXAxis] * 0.9), d3.max(censusData, d => d[chosenXAxis] * 1.1)])
+        .domain([d3.min(censusData, d => d[chosenXAxis] * 0.9), 
+        d3.max(censusData, d => d[chosenXAxis] * 1.1)])
         .range([0, width]);
         
         return xLinearScale;
@@ -55,7 +57,8 @@ function renderAxeX(newXScale, xAxis) {
 }
 function yScale(censusData, chosenYAxis) {
     var yLinearScale = d3.scaleLinear()
-        .domain([d3.min(censusData, d => d[chosenYAxis] * 0.9), d3.max(censusData, d => d[chosenYAxis] * 1.1)])
+        .domain([d3.min(censusData, d => d[chosenYAxis] * 0.9),
+        d3.max(censusData, d => d[chosenYAxis] * 1.1)])
         .range([height, 0]);
 
         return yLinearScale;
@@ -157,7 +160,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 // Import data from the CSV file
 // =================================
 d3.csv('assets/data/data.csv').then(function(censusData) {
-    console.log(censusData);
+    // console.log(censusData);
     //Parse Data
     censusData.forEach(function(data) {
         data.poverty = + data.poverty;
