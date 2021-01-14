@@ -105,7 +105,7 @@ function renderCirclesText(textCirclesGroup, newXScale, chosenXAxis) {
 function renderCirclesTextY(textCirclesGroup, newYScale, chosenYAxis) {
     textCirclesGroup.transition()
         .duration(1000)
-        .attr("y", d => newYScale(d[chosenYAxis]) + 5);
+        .attr("y", d => newYScale(d[chosenYAxis]) + 3);
     
     return textCirclesGroup;
 
@@ -204,7 +204,7 @@ var textCirclesGroup = circlesAll
 .append("text")
 .text(d => d.abbr)
 .attr("x", d => xLinearScale(d[chosenXAxis]))
-.attr("y", d => yLinearScale(d[chosenYAxis]))
+.attr("y", d => yLinearScale(d[chosenYAxis])+3)
 // .attr("r", 20)
 .classed("stateText callTip", true)
 .attr("fill", "black")
@@ -241,22 +241,25 @@ var textCirclesGroup = circlesAll
    .attr("transform", "rotate(-90)");
 
    var obeseLabel = labelsGroupY.append("text")
-    .attr("x", -20)
-    .attr("y", -(height/2))
+    .attr("x", -height/2)
+    .attr("y", -70)
+    .attr("dy","1em")
     .attr("value", "obesity") // value to grab for event listener
     .classed("inactive", true)
     .text("Obesse(%)");
 
     var smokesLabel = labelsGroupY.append("text")
-    .attr("x", -40)
-    .attr("y", -(height/2))
+    .attr("x", -height/2)
+    .attr("y", -50)
+    .attr("dy", "1em")
     .attr("value", "smokes") // value to grab for event listener
     .classed("inactive", true)
     .text("Smokes(%)");
 
     var healthcareLabel = labelsGroupY.append('text')
-    .attr('x', -60)
-    .attr("y", -(height/2))
+    .attr('x', -height/2)
+    .attr("y", -90)
+    .attr("dy", "1em")
     .attr("value", "healthcare") // value to grab for event listener
     .classed("active", true)
     .text("Lacks Healthcare(%)");
