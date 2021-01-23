@@ -6,21 +6,51 @@ d3.json(queryUrl, function(data) {
   createFeatures(data.features);
   console.log(queryUrl)
 });
+function markerSize(magnitude) {
+  return magnitude * 40000;
+}
 
+function markerColor(depth) {
+  if (depth > 90) {
+    return "darkred"
+  } 
+  else if (depth > 70) {
+    return "red"
+  } 
+  else if (depth > 50) {
+    return "orange"
+  }
+  else if (depth > 30) {
+    return "yellow"
+  }
+  else if (depth > 10) {
+    return "lime"
+  } 
+  else {
+    return "green"
+  }
+}
 function createFeatures(earthquakeData) {
+  // Create a GeoJSON layer containing the features array on the earthquakeData object
+  // Run the onEachFeature function once for each piece of data in the array
+  var earthquakes = L.geoJSON(earthquakeData, {
+    onEachFeature: 
 
   // Define a function we want to run once for each feature in the features array
   // Give each feature a popup describing the place and time of the earthquake
   function onEachFeature(feature, layer) {
     layer.bindPopup("<h3>" + feature.properties.place +
-    "</h3><hr><p>" + new Date(feature.properties.time) + "</p><hr><p>" + feature.properties.mag + "</p>");
+    "</h3><hr><p>" + new Date(feature.properties.time) + "</p><hr><p>" + feature.properties.mag + "</p><hr><p>" + feature.geometry.coordinates[2] +"</p>");
+  },
+  pointToLayer:function(feature,layerPoints){
+    return new L.circle(layerPoints, {
+      radius: markerSize(feature.properties.mag),
+      fillOpacity: .3,
+      fillColor: markerColor(feature.geometry.coordinates[2])
+    })
   }
+});
 
-  // Create a GeoJSON layer containing the features array on the earthquakeData object
-  // Run the onEachFeature function once for each piece of data in the array
-  var earthquakes = L.geoJSON(earthquakeData, {
-    onEachFeature: onEachFeature
-  });
 
   // Sending our earthquakes layer to the createMap function
   createMap(earthquakes);
@@ -44,52 +74,54 @@ function createMap(earthquakes) {
     id: "dark-v10",
     accessToken: API_KEY
   });
-//Loop through the properties and pull magnitude "mag"
+   // Define a baseMaps object to hold our base layers
+   var baseMaps = {
+    "Street Map": streetmap,
+    "Dark Map": darkmap
+  };
 
-for (var i = 0; i < Feature.mag; i++) {
-  var magnitude = Object.assign({}, mag[i]);
+  // Create overlay object to hold our overlay layer
+  var overlayMaps = {
+    Earthquakes: earthquakes
+  };
+// Create our map, giving it the streetmap and earthquakes layers to display on load
+var myMap = L.map("mapid", {
+  center: [
+    37.09, -95.71
+  ],
+  zoom: 5,
+  layers: [streetmap, earthquakes]
+});
+
+// Create a layer control
+// Pass in our baseMaps and overlayMaps
+// Add the layer control to the map
+L.control.layers(baseMaps, overlayMaps, {
+  collapsed: false
+}).addTo(myMap);
+var legend = L.control({position: 'bottomleft'});
+
+legend.onAdd = function () {
+
+    var div = L.DomUtil.create('div', 'info legend'),
+        depth = [-10, 10, 30, 50, 70, 90]
+        // colors = ["green", "light yellow", "yellow", "orange", "dark orange", "red"];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (var i = 0; i < depth.length; i++) {
+        div.innerHTML +=
+            '<i style="background:' + markerColor(depth[i] + 1) + '"></i> ' +
+            + depth[i] + (depth[i + 1] ? '&ndash;' + depth[i + 1] + '<br>' : '+');
+    }
+
+    return div;
+};
+
+legend.addTo(myMap);
 }
-function markerSize(magnitude) {
-  return magnitude * 5;
-}
-
-function markerColor(magnitude) {
-  if (magnitude > 4) {
-    return "red"
-  } 
-  else if (magnitude > 3) {
-    return "orange"
-  } 
-  else if (magnitude > 2) {
-    return "yellow"
-  } 
-  else {
-    return "green"
-  }
-}
-
-function markerOpacity(magnitude) {
-  if (magnitude > 6) {
-    return .99
-  } 
-  else if (magnitude > 5) {
-    return .80
-  } 
-  else if (magnitude > 4) {
-    return .70
-  } 
-  else if (magnitude > 3) {
-    return .60
-  }
-  else if (magnitude > 2) {
-    return .40
-  }
-  else {
-    return .30
-  }
-}
 
 
 
 
-}
+
+

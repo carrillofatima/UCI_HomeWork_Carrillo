@@ -1,7 +1,7 @@
 function Responsive(){
-// Set up our chart
-//var svgWidth = 960;
-//var svgHeight =500;
+//Set up our chart
+var svgWidth = 560;
+var svgHeight =100;
 
 var svgArea = d3.select("body").select("svg");
 //clear svg 
@@ -10,10 +10,10 @@ if (!svgArea.empty()){
 }
 
 var margin =  {
-    top: 20,
-    right: 40,
-    bottom: 100,
-    left: 100
+    top: 10,
+    right: 10,
+    bottom: 90,
+    left: 90
 };
 
 var svgWidth = window.innerWidth; 
