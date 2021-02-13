@@ -1,5 +1,5 @@
-### Machine Learning Challenge
-# Utilzed 3 different models: 
+# Machine Learning Challenge
+### Utilzed 3 different models: 
 
 1. Using Logistic Regretion(url:https://github.com/carrillofatima/UCI_HomeWork_Carrillo/blob/master/18-Machine%20Learning%20-%20Challenge/Instructions/starter_code/LogisticRegretion.ipynb) (classifier_model.sav)
     My findings were: 
